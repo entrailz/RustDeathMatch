@@ -13,9 +13,22 @@ namespace Oxide.Plugins
     [Info("Rust Deathmatch", "Lederp", "1.0.0")]
     class RustDeathmatch : RustPlugin
     {
+
+        Dictionary<BasePlayer, int> playerKills = new Dictionary<BasePlayer, int>();
+        Dictionary<BasePlayer, int> playerDeaths = new Dictionary<BasePlayer, int>();
+
         void OnPlayerInit(BasePlayer player)
         {
-            //Handle adding of items here, such as worn clothes, guns and ammo.
+            //Setup player for use with mod.
+            if (playerKills.ContainsKey(player) || playerDeaths.ContainsKey(player))
+            {
+                return;
+            }
+            else
+            {
+                playerKills.Add(player, 0);
+                playerDeaths.Add(player, 0);
+            }
         }
         
         void OnPlayerRespawned(BasePlayer player)
@@ -26,6 +39,13 @@ namespace Oxide.Plugins
         void OnEntityDeath(BaseCombatEntity entity, HitInfo hitinfo)
         {
             //Handle when a player dies, for example check who killed and increase their score.
+        }
+
+        void OnPlayerDisconnected(BasePlayer player)
+        {
+            //Remove player from list of players.
+            playerKills.Remove(player);
+            playerDeaths.Remove(player);
         }
     }
 }
