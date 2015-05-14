@@ -75,9 +75,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compass.cs" />
-    <Compile Include="PvPThing.cs" />
-    <Compile Include="Waypoint.cs" />
+    <Compile Include="RustDeathmatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

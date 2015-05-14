@@ -11,7 +11,7 @@ using Rust;
 namespace Oxide.Plugins
 {
     [Info("PvP Stuff", "Lederp", "1.0.0")]
-    class PvPThing : RustPlugin
+    class RustDeathmatch : RustPlugin
     {
         Dictionary<BasePlayer, bool> isPvPEnabled = new Dictionary<BasePlayer, bool>();
         void OnEntityTakeDamage(BaseCombatEntity entitiy, HitInfo hit)
