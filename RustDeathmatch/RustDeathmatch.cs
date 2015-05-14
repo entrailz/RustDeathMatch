@@ -13,6 +13,19 @@ namespace Oxide.Plugins
     [Info("Rust Deathmatch", "Lederp", "1.0.0")]
     class RustDeathmatch : RustPlugin
     {
+        void OnPlayerInit(BasePlayer player)
+        {
+            //Handle adding of items here, such as worn clothes, guns and ammo.
+        }
         
+        void OnPlayerRespawned(BasePlayer player)
+        {
+            //When a player has respawned, re-add items.
+        }
+
+        void OnEntityDeath(BaseCombatEntity entity, HitInfo hitinfo)
+        {
+            //Handle when a player dies, for example check who killed and increase their score.
+        }
     }
 }
