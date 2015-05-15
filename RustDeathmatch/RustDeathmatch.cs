@@ -19,6 +19,7 @@ namespace Oxide.Plugins
 
         void OnPlayerInit(BasePlayer player)
         {
+            player.inventory.Strip();
             //Setup player for use with mod.
             if (playerKills.ContainsKey(player) || playerDeaths.ContainsKey(player))
             {
@@ -33,7 +34,10 @@ namespace Oxide.Plugins
         
         void OnPlayerRespawned(BasePlayer player)
         {
-            //When a player has respawned, re-add items.
+            player.inventory.Strip();
+            ItemContainer belt = player.inventory.containerBelt;
+            ItemContainer main = player.inventory.containerMain;
+            ItemContainer wear = player.inventory.containerWear;
         }
 
         void OnEntityDeath(BaseCombatEntity entity, HitInfo hitinfo)
@@ -46,6 +50,34 @@ namespace Oxide.Plugins
             //Remove player from list of players.
             playerKills.Remove(player);
             playerDeaths.Remove(player);
+        }
+
+        void CreateItemName(string itemdata, out string itemname)
+        {
+            itemname = itemdata.Substring(0, itemdata.IndexOf(" "));
+        }
+
+        void GiveItem(BasePlayer player, string name, int amount, ItemContainer container)
+        {
+            var itemdefinition = ItemManager.FindItemDefinition(name);
+            if (itemdefinition != null)
+            {
+                int stackable = 1;
+                if (itemdefinition.stackable == null || itemdefinition.stackable < 1) stackable = 1;
+                else stackable = itemdefinition.stackable;
+                for (var i = amount; i > 0; i = i - stackable)
+                {
+                    var giveamount = 0;
+                    if (i >= stackable)
+                        giveamount = stackable;
+                    else
+                        giveamount = i;
+                    if (giveamount > 0)
+                    {
+                        player.inventory.GiveItem(ItemManager.CreateByItemID(itemdefinition.itemid, giveamount), container);
+                    }
+                }
+            }
         }
     }
 }
