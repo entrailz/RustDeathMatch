@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Data;
 using UnityEngine;
@@ -17,9 +18,17 @@ namespace Oxide.Plugins
         Dictionary<BasePlayer, int> playerKills = new Dictionary<BasePlayer, int>();
         Dictionary<BasePlayer, int> playerDeaths = new Dictionary<BasePlayer, int>();
 
+        void OnServerInitialized()
+        {
+            
+        }
+
         void OnPlayerInit(BasePlayer player)
         {
             player.inventory.Strip();
+            ItemContainer belt = player.inventory.containerBelt;
+            ItemContainer main = player.inventory.containerMain;
+            ItemContainer wear = player.inventory.containerWear;
             //Setup player for use with mod.
             if (playerKills.ContainsKey(player) || playerDeaths.ContainsKey(player))
             {
@@ -30,19 +39,46 @@ namespace Oxide.Plugins
                 playerKills.Add(player, 0);
                 playerDeaths.Add(player, 0);
             }
+            CreatePlayerInventory(player);
         }
         
         void OnPlayerRespawned(BasePlayer player)
+        {
+            CreatePlayerInventory(player);
+        }
+
+        void CreatePlayerInventory(BasePlayer player)
         {
             player.inventory.Strip();
             ItemContainer belt = player.inventory.containerBelt;
             ItemContainer main = player.inventory.containerMain;
             ItemContainer wear = player.inventory.containerWear;
+            GiveItem(player, "coffeecan_helmet", 1, wear);
+            GiveItem(player, "jacket_snow", 1, wear);
+            GiveItem(player, "urban_pants", 1, wear);
+            GiveItem(player, "urban_boots", 1, wear);
+            GiveItem(player, "hazmat_gloves", 1, wear);
+            GiveItem(player, "rifle_bolt", 1, belt);
+            GiveItem(player, "rifle_ak", 1, belt);
+            GiveItem(player, "smg_thompson", 1, belt);
+            GiveItem(player, "ammo_rifle", 200, main);
         }
 
         void OnEntityDeath(BaseCombatEntity entity, HitInfo hitinfo)
         {
             //Handle when a player dies, for example check who killed and increase their score.
+            if (entity is BasePlayer)
+            {
+                BasePlayer killer = hitinfo.Initiator.ToPlayer();
+                if (killer is BasePlayer)
+                {
+                    BasePlayer victim = entity.ToPlayer();
+                    playerKills[killer] = playerKills[killer] + 1;
+                    playerDeaths[victim] = playerDeaths[victim] + 1;
+                    SendReply(victim, "You was killed by: " + killer.displayName + " using " + hitinfo.Weapon.LookupShortPrefabName());
+                    SendReply(killer, "You killed: " + victim.displayName);
+                }
+            }
         }
 
         void OnPlayerDisconnected(BasePlayer player)
@@ -76,6 +112,41 @@ namespace Oxide.Plugins
                     {
                         player.inventory.GiveItem(ItemManager.CreateByItemID(itemdefinition.itemid, giveamount), container);
                     }
+                }
+            }
+        }
+
+        [ChatCommand("top5")]
+        void chatCmd_top5(BasePlayer player, string command, string[] args)
+        {
+            int listed = 0;
+            foreach (KeyValuePair<BasePlayer, int> kills in playerKills.OrderBy(key=>key.Value))
+            {
+                if (listed == 5)
+                {
+                    break;
+                }
+                else
+                {
+                    SendReply(player, "Name: " + kills.Key.displayName + " - " + kills.Value.ToString());
+                    listed++;
+                }
+            }
+        }
+        [ChatCommand("top10")]
+        void chatCmd_top10(BasePlayer player, string command, string[] args)
+        {
+            int listed = 0;
+            foreach (KeyValuePair<BasePlayer, int> kills in playerKills.OrderBy(key => key.Value))
+            {
+                if (listed == 10)
+                {
+                    break;
+                }
+                else
+                {
+                    SendReply(player, "Name: " + kills.Key.displayName + " - " + kills.Value.ToString());
+                    listed++;
                 }
             }
         }
