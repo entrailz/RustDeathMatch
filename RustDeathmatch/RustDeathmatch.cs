@@ -92,6 +92,7 @@ namespace Oxide.Plugins
                 {
                     victim.Respawn();
                     victim.EndSleeping();
+                    
                 });
             }
         }
@@ -169,6 +170,19 @@ namespace Oxide.Plugins
                     SendReply(player, "Name: " + kills.Key.displayName + " - " + kills.Value.ToString());
                     listed++;
                 }
+            }
+        }
+
+        [ChatCommand("spectate")]
+        void chatCmd_spectate(BasePlayer player, string command, string[] args)
+        {
+            if (player.IsSpectating() == false)
+            {
+                player.StartSpectating();
+            }
+            else
+            {
+                player.StopSpectating();
             }
         }
 
