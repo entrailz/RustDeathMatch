@@ -90,9 +90,7 @@ namespace Oxide.Plugins
                 }
                 timer.Once(0.5f, () =>
                 {
-                    victim.Respawn();
-                    victim.EndSleeping();
-                    
+                    spawnPlayerinPVPArea(victim);
                 });
             }
         }
@@ -101,6 +99,12 @@ namespace Oxide.Plugins
             //Remove player from list of players.
             playerKills.Remove(player);
             playerDeaths.Remove(player);
+        }
+
+        void spawnPlayerinPVPArea(BasePlayer player)
+        {
+            player.Respawn();
+            player.EndSleeping();
         }
 
         void CreateItemName(string itemdata, out string itemname)
@@ -154,6 +158,15 @@ namespace Oxide.Plugins
                     listed++;
                 }
             }
+        }
+
+        [ChatCommand("loc")]
+        void chatCmd_Location(BasePlayer player, string command, string[] args)
+        {
+            float x = player.transform.position.x;
+            float y = player.transform.position.y;
+            float z = player.transform.position.z;
+            SendReply(player, "X: " + x.ToString() + " Y: " + y.ToString() + " Z: " + z.ToString());
         }
         [ChatCommand("top10")]
         void chatCmd_top10(BasePlayer player, string command, string[] args)
