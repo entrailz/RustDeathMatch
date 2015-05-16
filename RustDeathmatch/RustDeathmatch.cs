@@ -88,9 +88,13 @@ namespace Oxide.Plugins
                 {
                     //Error can occur on player suicide, this is to catch that.
                 }
+                timer.Once(0.5f, () =>
+                {
+                    victim.Respawn();
+                    victim.EndSleeping();
+                });
             }
         }
-
         void OnPlayerDisconnected(BasePlayer player)
         {
             //Remove player from list of players.
