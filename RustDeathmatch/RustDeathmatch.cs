@@ -103,8 +103,22 @@ namespace Oxide.Plugins
 
         void spawnPlayerinPVPArea(BasePlayer player)
         {
-            player.Respawn();
-            player.EndSleeping();
+            System.Random random = new System.Random();
+            int onlinePlayers = BasePlayer.activePlayerList.Count;
+            if (onlinePlayers != 1)
+            {
+                int randomPlayer = random.Next(0, onlinePlayers);
+                BasePlayer selectedPlayer = BasePlayer.activePlayerList[randomPlayer];
+                Vector3 newLocation = new Vector3(selectedPlayer.transform.position.x + 5, selectedPlayer.transform.position.y, selectedPlayer.transform.position.z);
+                player.transform.position = newLocation;
+                player.Respawn(false);
+                player.EndSleeping();
+            }
+            else
+            {
+                player.Respawn();
+                player.EndSleeping();
+            }
         }
 
         void CreateItemName(string itemdata, out string itemname)
