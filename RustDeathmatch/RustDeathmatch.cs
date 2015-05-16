@@ -105,17 +105,21 @@ namespace Oxide.Plugins
         {
             System.Random random = new System.Random();
             int onlinePlayers = BasePlayer.activePlayerList.Count;
+            SendReply(player, onlinePlayers.ToString());
             if (onlinePlayers != 1)
             {
+                SendReply(player, "Spawning next to players.");
                 int randomPlayer = random.Next(0, onlinePlayers);
                 BasePlayer selectedPlayer = BasePlayer.activePlayerList[randomPlayer];
-                Vector3 newLocation = new Vector3(selectedPlayer.transform.position.x + 5, selectedPlayer.transform.position.y, selectedPlayer.transform.position.z);
+                Vector3 newLocation = new Vector3(selectedPlayer.transform.position.x + 20, selectedPlayer.transform.position.y, selectedPlayer.transform.position.z);
                 player.transform.position = newLocation;
                 player.Respawn(false);
                 player.EndSleeping();
+                ForcePlayerPosition(player, newLocation);
             }
             else
             {
+                SendReply(player, "Spawning at ocean.");
                 player.Respawn();
                 player.EndSleeping();
             }
@@ -159,6 +163,11 @@ namespace Oxide.Plugins
         [ChatCommand("top5")]
         void chatCmd_top5(BasePlayer player, string command, string[] args)
         {
+            if (playerKills.Count == 0)
+            {
+                SendReply(player, "There is currently no one with any kills! Be the first to get a kill.");
+                return;
+            }
             int listed = 0;
             foreach (KeyValuePair<BasePlayer, int> kills in playerKills.OrderBy(key => key.Value))
             {
@@ -185,6 +194,11 @@ namespace Oxide.Plugins
         [ChatCommand("top10")]
         void chatCmd_top10(BasePlayer player, string command, string[] args)
         {
+            if (playerKills.Count == 0)
+            {
+                SendReply(player, "There is currently no one with any kills! Be the first to get a kill.");
+                return;
+            }
             int listed = 0;
             foreach (KeyValuePair<BasePlayer, int> kills in playerKills.OrderBy(key => key.Value))
             {
