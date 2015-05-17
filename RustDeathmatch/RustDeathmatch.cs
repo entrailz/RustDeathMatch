@@ -271,12 +271,13 @@ namespace Oxide.Plugins
             Interface.GetMod().DataFileSystem.SaveDatafile("spawns.txt");
         }
 
-        object loadSpawnfile(string filename)
+        void loadSpawnfile(string filename)
         {
             var loadFile = Interface.GetMod().DataFileSystem.GetDatafile(filename);
             if (loadFile["1"] == null)
             {
-                return "This file doesn't exist";
+                Puts("Error loading spawns file.");
+                return;
             }  
             foreach (KeyValuePair<string, object> pair in loadFile)
             {
@@ -284,7 +285,7 @@ namespace Oxide.Plugins
                 var currentvalue = pair.Value as Dictionary<string, object>;
                 spawnPoints.Add(nextnumber, new Vector3(Convert.ToInt32(currentvalue["x"]), Convert.ToInt32(currentvalue["y"]), Convert.ToInt32(currentvalue["z"])));
             }
-            return true;
+            Puts("Spawns loaded!");
         }
     }
 }
