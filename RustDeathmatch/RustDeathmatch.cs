@@ -18,10 +18,20 @@ namespace Oxide.Plugins
         Dictionary<BasePlayer, int> playerKills = new Dictionary<BasePlayer, int>();
         Dictionary<BasePlayer, int> playerDeaths = new Dictionary<BasePlayer, int>();
         Dictionary<int, Vector3> spawnPoints = new Dictionary<int, Vector3>();
+        List<BaseNPC> npcList = Component.FindObjectsOfType<BaseNPC>().ToList();
+        List<BaseCorpse> corpseList = Component.FindObjectsOfType<BaseCorpse>().ToList();
 
         void OnServerInitialized()
         {
             loadSpawnfile("spawns");
+            foreach (BaseNPC npc in npcList)
+            {
+                npc.Kill();
+            }
+            foreach (BaseCorpse corpse in corpseList)
+            {
+                corpse.RemoveCorpse();
+            }
         }
 
         void OnPlayerInit(BasePlayer player)
@@ -102,6 +112,11 @@ namespace Oxide.Plugins
             {
                 BaseCorpse corpse = entity as BaseCorpse;
                 corpse.RemoveCorpse();
+            }
+            if (entity.GetComponent("BaseNPC"))
+            {
+                BaseNPC npc = entity as BaseNPC;
+                npc.Kill();
             }
         }
         void OnPlayerDisconnected(BasePlayer player)
