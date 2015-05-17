@@ -32,6 +32,7 @@ namespace Oxide.Plugins
             {
                 corpse.RemoveCorpse();
             }
+            
         }
 
         void OnPlayerInit(BasePlayer player)
@@ -83,12 +84,16 @@ namespace Oxide.Plugins
 
         void OnEntityDeath(BaseCombatEntity entity, HitInfo hitinfo)
         {
-            //Handle when a player dies, for example check who killed and increase their score.
-            if (!hitinfo.damageTypes.Has(DamageType.Suicide))
+            if (entity is BasePlayer)
             {
-                if (entity is BasePlayer)
+                BasePlayer victim = entity.ToPlayer();
+                //Handle when a player dies, for example check who killed and increase their score.
+                if (hitinfo.damageTypes.Has(DamageType.Suicide))
                 {
-                    BasePlayer victim = entity.ToPlayer();
+
+                }
+                else
+                { 
                     try
                     {
                         BasePlayer killer = hitinfo.Initiator.ToPlayer();
@@ -101,11 +106,11 @@ namespace Oxide.Plugins
                     {
                         //Error can occur on player suicide, this is to catch that.
                     }
-                    timer.Once(0.5f, () =>
-                    {
-                        spawnPlayerinPVPArea(victim);
-                    });
                 }
+                timer.Once(0.5f, () =>
+                {
+                    spawnPlayerinPVPArea(victim);
+                });
             }
         }
 
@@ -299,7 +304,7 @@ namespace Oxide.Plugins
             {
                 Puts("Error loading spawns file.");
                 return;
-            }  
+            }
             foreach (KeyValuePair<string, object> pair in loadFile)
             {
                 int nextnumber = spawnPoints.Count + 1;
