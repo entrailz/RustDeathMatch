@@ -84,6 +84,10 @@ namespace Oxide.Plugins
         void OnEntityDeath(BaseCombatEntity entity, HitInfo hitinfo)
         {
             //Handle when a player dies, for example check who killed and increase their score.
+            if (hitinfo.damageTypes.Has(DamageType.Suicide))
+            {
+                return;
+            }
             if (entity is BasePlayer)
             {
                 BasePlayer victim = entity.ToPlayer();
