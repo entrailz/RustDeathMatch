@@ -100,7 +100,8 @@ namespace Oxide.Plugins
         {
             if (entity.GetComponent("BaseCorpse"))
             {
-                Puts("Corpse spawned!");
+                BaseCorpse corpse = entity as BaseCorpse;
+                corpse.RemoveCorpse();
             }
         }
         void OnPlayerDisconnected(BasePlayer player)
