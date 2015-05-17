@@ -21,7 +21,7 @@ namespace Oxide.Plugins
 
         void OnServerInitialized()
         {
-
+            loadSpawnfile("spawns");
         }
 
         void OnPlayerInit(BasePlayer player)
@@ -105,25 +105,12 @@ namespace Oxide.Plugins
         void spawnPlayerinPVPArea(BasePlayer player)
         {
             System.Random random = new System.Random();
-            int onlinePlayers = BasePlayer.activePlayerList.Count;
-            SendReply(player, onlinePlayers.ToString());
-            if (onlinePlayers != 1)
-            {
-                SendReply(player, "Spawning next to players.");
-                int randomPlayer = random.Next(0, onlinePlayers);
-                BasePlayer selectedPlayer = BasePlayer.activePlayerList[randomPlayer];
-                Vector3 newLocation = new Vector3(selectedPlayer.transform.position.x + 20, selectedPlayer.transform.position.y, selectedPlayer.transform.position.z);
-                player.transform.position = newLocation;
-                player.Respawn(false);
-                player.EndSleeping();
-                ForcePlayerPosition(player, newLocation);
-            }
-            else
-            {
-                SendReply(player, "Spawning at ocean.");
-                player.Respawn();
-                player.EndSleeping();
-            }
+            Vector3 location = new Vector3();
+            location = spawnPoints[random.Next(0, spawnPoints.Count)];
+            player.transform.position = location;
+            player.Respawn(false);
+            player.EndSleeping();
+            ForcePlayerPosition(player, location);
         }
 
         void CreateItemName(string itemdata, out string itemname)
@@ -256,7 +243,7 @@ namespace Oxide.Plugins
         [ChatCommand("savespawns")]
         void chatCmd_saveSpawns(BasePlayer player, string command, string[] args)
         {
-            var saveFile = Interface.GetMod().DataFileSystem.GetDatafile("spawns.txt");
+            var saveFile = Interface.GetMod().DataFileSystem.GetDatafile("spawns");
             saveFile.Clear();
             int i = 1;
             foreach (KeyValuePair<int, Vector3> spawn in spawnPoints)
@@ -268,7 +255,7 @@ namespace Oxide.Plugins
                 saveFile[i.ToString()] = addSpawnPoint;
                 i++;
             }
-            Interface.GetMod().DataFileSystem.SaveDatafile("spawns.txt");
+            Interface.GetMod().DataFileSystem.SaveDatafile("spawns");
         }
 
         void loadSpawnfile(string filename)
