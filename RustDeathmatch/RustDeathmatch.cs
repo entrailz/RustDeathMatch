@@ -84,29 +84,28 @@ namespace Oxide.Plugins
         void OnEntityDeath(BaseCombatEntity entity, HitInfo hitinfo)
         {
             //Handle when a player dies, for example check who killed and increase their score.
-            if (hitinfo.damageTypes.Has(DamageType.Suicide))
+            if (!hitinfo.damageTypes.Has(DamageType.Suicide))
             {
-                return;
-            }
-            if (entity is BasePlayer)
-            {
-                BasePlayer victim = entity.ToPlayer();
-                try
+                if (entity is BasePlayer)
                 {
-                    BasePlayer killer = hitinfo.Initiator.ToPlayer();    
-                    playerKills[killer] = playerKills[killer] + 1;
-                    playerDeaths[victim] = playerDeaths[victim] + 1;
-                    SendReply(victim, "You was killed by: " + killer.displayName + " using " + hitinfo.Weapon.LookupShortPrefabName());
-                    SendReply(killer, "You killed: " + victim.displayName);
+                    BasePlayer victim = entity.ToPlayer();
+                    try
+                    {
+                        BasePlayer killer = hitinfo.Initiator.ToPlayer();
+                        playerKills[killer] = playerKills[killer] + 1;
+                        playerDeaths[victim] = playerDeaths[victim] + 1;
+                        SendReply(victim, "You was killed by: " + killer.displayName + " using " + hitinfo.Weapon.LookupShortPrefabName());
+                        SendReply(killer, "You killed: " + victim.displayName);
+                    }
+                    catch (Exception ex)
+                    {
+                        //Error can occur on player suicide, this is to catch that.
+                    }
+                    timer.Once(0.5f, () =>
+                    {
+                        spawnPlayerinPVPArea(victim);
+                    });
                 }
-                catch (Exception ex)
-                {
-                    //Error can occur on player suicide, this is to catch that.
-                }
-                timer.Once(0.5f, () =>
-                {
-                    spawnPlayerinPVPArea(victim);
-                });
             }
         }
 
