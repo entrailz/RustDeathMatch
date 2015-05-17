@@ -95,6 +95,14 @@ namespace Oxide.Plugins
                 });
             }
         }
+
+        void OnEntitySpawned(BaseNetworkable entity)
+        {
+            if (entity.GetComponent("BaseCorpse"))
+            {
+                Puts("Corpse spawned!");
+            }
+        }
         void OnPlayerDisconnected(BasePlayer player)
         {
             //Remove player from list of players.
