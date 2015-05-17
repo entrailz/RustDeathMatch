@@ -17,6 +17,7 @@ namespace Oxide.Plugins
 
         Dictionary<BasePlayer, int> playerKills = new Dictionary<BasePlayer, int>();
         Dictionary<BasePlayer, int> playerDeaths = new Dictionary<BasePlayer, int>();
+        Dictionary<int, Vector3> spawnPoints = new Dictionary<int, Vector3>();
 
         void OnServerInitialized()
         {
@@ -243,6 +244,47 @@ namespace Oxide.Plugins
             player.SetPlayerFlag(BasePlayer.PlayerFlags.ReceivingSnapshot, false);
             player.ClientRPCPlayer(null, player, "FinishLoading");
 
+        }
+
+        [ChatCommand("addspawn")]
+        void chatCmd_addSpawn(BasePlayer player, string command, string[] args)
+        {
+            int nextnumber = spawnPoints.Count + 1;
+            spawnPoints.Add(nextnumber, player.transform.position);
+        }
+
+        [ChatCommand("savespawns")]
+        void chatCmd_saveSpawns(BasePlayer player, string command, string[] args)
+        {
+            var saveFile = Interface.GetMod().DataFileSystem.GetDatafile("spawns.txt");
+            saveFile.Clear();
+            int i = 1;
+            foreach (KeyValuePair<int, Vector3> spawn in spawnPoints)
+            {
+                var addSpawnPoint = new Dictionary<string, object>();
+                addSpawnPoint.Add("x", Math.Round(spawn.Value.x * 100) / 100);
+                addSpawnPoint.Add("y", Math.Round(spawn.Value.y * 100) / 100);
+                addSpawnPoint.Add("z", Math.Round(spawn.Value.z * 100) / 100);
+                saveFile[i.ToString()] = addSpawnPoint;
+                i++;
+            }
+            Interface.GetMod().DataFileSystem.SaveDatafile("spawns.txt");
+        }
+
+        object loadSpawnfile(string filename)
+        {
+            var loadFile = Interface.GetMod().DataFileSystem.GetDatafile(filename);
+            if (loadFile["1"] == null)
+            {
+                return "This file doesn't exist";
+            }  
+            foreach (KeyValuePair<string, object> pair in loadFile)
+            {
+                int nextnumber = spawnPoints.Count + 1;
+                var currentvalue = pair.Value as Dictionary<string, object>;
+                spawnPoints.Add(nextnumber, new Vector3(Convert.ToInt32(currentvalue["x"]), Convert.ToInt32(currentvalue["y"]), Convert.ToInt32(currentvalue["z"])));
+            }
+            return true;
         }
     }
 }
