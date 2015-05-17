@@ -106,7 +106,8 @@ namespace Oxide.Plugins
         {
             System.Random random = new System.Random();
             Vector3 location = new Vector3();
-            location = spawnPoints[random.Next(0, spawnPoints.Count)];
+            int number = random.Next(1, spawnPoints.Count);
+            location = spawnPoints[number];
             player.transform.position = location;
             player.Respawn(false);
             player.EndSleeping();
@@ -256,6 +257,12 @@ namespace Oxide.Plugins
                 i++;
             }
             Interface.GetMod().DataFileSystem.SaveDatafile("spawns");
+        }
+
+        [ChatCommand("reloadspawns")]
+        void chatCmd_reloadSpawns(BasePlayer player, string command, string[] args)
+        {
+            loadSpawnfile("spawns");
         }
 
         void loadSpawnfile(string filename)
