@@ -47,6 +47,11 @@ namespace Oxide.Plugins
             }
         }
 
+        bool OnEligibleForWounding(BasePlayer player, HitInfo info)
+        {
+            return false;
+        }
+
         void OnPlayerInit(BasePlayer player)
         {
             //Setup player for use with mod.
