@@ -33,6 +33,18 @@ namespace Oxide.Plugins
             {
                 corpse.RemoveCorpse();
             }
+            foreach (BasePlayer player in BasePlayer.activePlayerList)
+            {
+                if (playerKills.ContainsKey(player) || playerDeaths.ContainsKey(player))
+                {
+                    return;
+                }
+                else
+                {
+                    playerKills.Add(player, 0);
+                    playerDeaths.Add(player, 0);
+                }
+            }
         }
 
         void OnPlayerInit(BasePlayer player)
@@ -49,12 +61,14 @@ namespace Oxide.Plugins
             }
             CreatePlayerInventory(player);
             setPlayerHealthandFood(player);
+            increaseGunAmmo(player);
         }
 
         void OnPlayerRespawned(BasePlayer player)
         {
             CreatePlayerInventory(player);
             setPlayerHealthandFood(player);
+            increaseGunAmmo(player);
         }
 
         void CreatePlayerInventory(BasePlayer player)
@@ -73,8 +87,11 @@ namespace Oxide.Plugins
             GiveItem(player, "smg_thompson", 1, belt, false);
             GiveItem(player, "ammo_rifle", 200, main, true);
             GiveItem(player, "ammo_pistol", 200, main, true);
-            GiveItem(player, "largemedkit", 200, belt, true);
+            GiveItem(player, "ammo_rifle_hv", 64, main, true);
+            GiveItem(player, "ammo_pistol_hv", 64, main, true);
+            GiveItem(player, "bandage", 200, belt, true);
             GiveItem(player, "syringe_medical", 100, belt, true);
+            GiveItem(player, "largemedkit", 5, belt, true);
         }
 
         void setPlayerHealthandFood(BasePlayer player)
@@ -89,11 +106,17 @@ namespace Oxide.Plugins
             {
                 if (mag.ownerPlayer == player)
                 {
-                    //SendReply(player, StripWeapons(mag.LookupShortPrefabName()));
-                    if (StripWeapons(mag.LookupShortPrefabName()) == "boltrifle")
+                    switch (StripWeapons(mag.LookupShortPrefabName()))
                     {
-                        mag.primaryMagazine.capacity = 10;
-                        mag.primaryMagazine.contents = 10;
+                        case "boltrifle":
+                            mag.primaryMagazine.contents = 4;
+                            break;
+                        case "thompson":
+                            mag.primaryMagazine.contents = 20;
+                            break;
+                        case "ak47u":
+                            mag.primaryMagazine.contents = 30;
+                            break;
                     }
                 }
                 //SendReply(player, mag.primaryMagazine.capacity.ToString());
