@@ -20,6 +20,7 @@ namespace Oxide.Plugins
         Dictionary<int, Vector3> spawnPoints = new Dictionary<int, Vector3>();
         List<BaseNPC> npcList = Component.FindObjectsOfType<BaseNPC>().ToList();
         List<BaseCorpse> corpseList = Component.FindObjectsOfType<BaseCorpse>().ToList();
+       
 
         void OnServerInitialized()
         {
@@ -32,7 +33,6 @@ namespace Oxide.Plugins
             {
                 corpse.RemoveCorpse();
             }
-            
         }
 
         void OnPlayerInit(BasePlayer player)
@@ -75,6 +75,20 @@ namespace Oxide.Plugins
             GiveItem(player, "ammo_pistol", 200, main, true);
             GiveItem(player, "largemedkit", 200, belt, true);
             GiveItem(player, "syringe_medical", 100, belt, true);
+            //List<BaseProjectile> mags = Component.FindObjectsOfType<BaseProjectile>().ToList();
+            //foreach (BaseProjectile mag in mags)
+            //{
+            //    if (mag.ownerPlayer == player)
+            //    {
+            //        //SendReply(player, StripWeapons(mag.LookupShortPrefabName()));
+            //        if (StripWeapons(mag.LookupShortPrefabName()) == "boltrifle")
+            //        {
+            //            mag.primaryMagazine.capacity = 10;
+            //            mag.primaryMagazine.contents = 10;
+            //        }
+            //    }
+            //    //SendReply(player, mag.primaryMagazine.capacity.ToString());
+            //}
         }
 
         void setPlayerHealthandFood(BasePlayer player)
@@ -99,7 +113,7 @@ namespace Oxide.Plugins
                         BasePlayer killer = hitinfo.Initiator.ToPlayer();
                         playerKills[killer] = playerKills[killer] + 1;
                         playerDeaths[victim] = playerDeaths[victim] + 1;
-                        SendReply(victim, "You was killed by: " + killer.displayName + " using " + hitinfo.Weapon.LookupShortPrefabName());
+                        SendReply(victim, "You was killed by: " + killer.displayName + " using " + StripWeapons(hitinfo.Weapon.LookupShortPrefabName()));
                         SendReply(killer, "You killed: " + victim.displayName);
                     }
                     catch (Exception ex)
@@ -295,6 +309,12 @@ namespace Oxide.Plugins
         void chatCmd_reloadSpawns(BasePlayer player, string command, string[] args)
         {
             loadSpawnfile("spawns");
+        }
+
+        string StripWeapons(string name)
+        {
+            string[] splitname = name.Split('.');
+            return splitname[0];
         }
 
         void loadSpawnfile(string filename)
