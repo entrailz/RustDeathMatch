@@ -75,25 +75,29 @@ namespace Oxide.Plugins
             GiveItem(player, "ammo_pistol", 200, main, true);
             GiveItem(player, "largemedkit", 200, belt, true);
             GiveItem(player, "syringe_medical", 100, belt, true);
-            //List<BaseProjectile> mags = Component.FindObjectsOfType<BaseProjectile>().ToList();
-            //foreach (BaseProjectile mag in mags)
-            //{
-            //    if (mag.ownerPlayer == player)
-            //    {
-            //        //SendReply(player, StripWeapons(mag.LookupShortPrefabName()));
-            //        if (StripWeapons(mag.LookupShortPrefabName()) == "boltrifle")
-            //        {
-            //            mag.primaryMagazine.capacity = 10;
-            //            mag.primaryMagazine.contents = 10;
-            //        }
-            //    }
-            //    //SendReply(player, mag.primaryMagazine.capacity.ToString());
-            //}
         }
 
         void setPlayerHealthandFood(BasePlayer player)
         {
             player.health = 100f;
+        }
+
+        void increaseGunAmmo(BasePlayer player)
+        {
+            List<BaseProjectile> mags = Component.FindObjectsOfType<BaseProjectile>().ToList();
+            foreach (BaseProjectile mag in mags)
+            {
+                if (mag.ownerPlayer == player)
+                {
+                    //SendReply(player, StripWeapons(mag.LookupShortPrefabName()));
+                    if (StripWeapons(mag.LookupShortPrefabName()) == "boltrifle")
+                    {
+                        mag.primaryMagazine.capacity = 10;
+                        mag.primaryMagazine.contents = 10;
+                    }
+                }
+                //SendReply(player, mag.primaryMagazine.capacity.ToString());
+            }
         }
 
         void OnEntityDeath(BaseCombatEntity entity, HitInfo hitinfo)
@@ -118,6 +122,7 @@ namespace Oxide.Plugins
                     }
                     catch (Exception ex)
                     {
+                        Puts(ex.Message);
                         //Error can occur on player suicide, this is to catch that.
                     }
                 }
