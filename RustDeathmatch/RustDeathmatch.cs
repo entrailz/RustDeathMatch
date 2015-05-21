@@ -12,7 +12,6 @@ namespace Oxide.Plugins
     [Info("Rust Deathmatch", "Lederp", "1.0.0")]
     class RustDeathmatch : RustPlugin
     {
-
         Dictionary<BasePlayer, int> playerKills = new Dictionary<BasePlayer, int>();
         Dictionary<BasePlayer, int> playerDeaths = new Dictionary<BasePlayer, int>();
         Dictionary<int, Vector3> spawnPoints = new Dictionary<int, Vector3>();
