@@ -5,8 +5,6 @@ using System.Reflection;
 using System.Data;
 using UnityEngine;
 using Oxide.Core;
-using Oxide.Core.Configuration;
-using Oxide.Core.Plugins;
 using Rust;
 
 namespace Oxide.Plugins
