@@ -44,7 +44,7 @@ namespace Oxide.Plugins
             }
         }
 
-        bool OnEligibleForWounding(BasePlayer player, HitInfo info)
+        bool CanBeWounded(BasePlayer player, HitInfo info)
         {
             return false;
         }

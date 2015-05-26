@@ -75,6 +75,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PasswordProtect.cs" />
+    <Compile Include="WhoUpdated.cs" />
     <Compile Include="RustDeathmatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
